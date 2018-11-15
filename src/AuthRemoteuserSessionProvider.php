@@ -33,7 +33,7 @@ use GlobalVarConfig;
 /**
  * Session provider for the Auth_remoteuser extension.
  *
- * @version 2.1.0
+ * @version 2.2.0
  * @since 2.0.0
  */
 class AuthRemoteuserSessionProvider extends UserNameSessionProvider {
@@ -44,6 +44,14 @@ class AuthRemoteuserSessionProvider extends UserNameSessionProvider {
 	 * @since 2.0.0
 	 */
 	const HOOKNAME = "AuthRemoteuserFilterUserName";
+
+	/**
+	 * This extension provides the `AuthRemoteuserBeforeUserLogin` hook.
+	 *
+	 * @var string
+	 * @since 2.2.0
+	 */
+	const BEFORE_USER_LOGIN_HOOKNAME = "AuthRemoteuserBeforeUserLogin";
 
 	/**
 	 * The constructor processes the extension configuration.

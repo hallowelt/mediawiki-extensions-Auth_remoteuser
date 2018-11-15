@@ -54,7 +54,7 @@ use Title;
  * only.
  *
  * @see CookieSessionProvider::provideSessionInfo()
- * @version 2.1.0
+ * @version 2.2.0
  * @since 2.0.0
  */
 class UserNameSessionProvider extends CookieSessionProvider {
@@ -66,6 +66,15 @@ class UserNameSessionProvider extends CookieSessionProvider {
 	 * @since 2.0.0
 	 */
 	const HOOKNAME = "UserNameSessionProviderFilterUserName";
+
+	/**
+	 * The hook identifier this class provides to let other extensions check for
+	 * user authorization.
+	 *
+	 * @var string
+	 * @since 2.2.0
+	 */
+	const BEFORE_USER_LOGIN_HOOKNAME = "UserNameSessionProviderBeforeUserLogin";
 
 	/**
 	 * The remote user name(s) given as an array.
@@ -418,6 +427,19 @@ class UserNameSessionProvider extends CookieSessionProvider {
 					]
 				);
 				$this->callUserLoggedInHook = true;
+			}
+
+			# When doing the initial login, we give other extensions the chance
+			# to check for authorization, based on the originally provided
+			# username and the filtered username
+			if( $this->callUserLoggedInHook ) {
+				$beforeUserLoginHookResult = Hooks::run(
+					static::BEFORE_USER_LOGIN_HOOKNAME,
+					[ $remoteUserName, $filteredUserName ]
+				);
+				if( !$beforeUserLoginHookResult ) {
+					return null;
+				}
 			}
 
 			# Store info about user in the provider metadata.
